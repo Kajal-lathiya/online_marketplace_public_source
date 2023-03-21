@@ -74,7 +74,7 @@ function Home() {
             </ul>
             <li>Authentication: Salt and hash</li>
             <li>
-              Authorization: JWT (JSON Web Token, the token expires in 1 hour)
+              Authorization: JWT (JSON Web Token, the token expires in 1 week)
             </li>
           </ul>
         </div>
