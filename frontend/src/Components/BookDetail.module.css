@@ -1,7 +1,5 @@
 .outerContainer {
-    margin: auto;
-    width: 100%;
-    margin-top: 4rem;
+    margin-block: 2rem;
 }
 
 .innerContainer {
@@ -10,9 +8,10 @@
 }
 
 .imageContainer {
-    width: 25%;
-    height: 300px;
+    width: 50%;
     display: flex;
+    margin-top: 20px;
+    background-color: aqua;
     justify-content: center;
     align-items: center;
 }
@@ -25,32 +24,26 @@
     justify-content: space-between;
     border-left: solid;
     border-width: 2px;
-    border-color: #5E81AC;
+    border-color: #5e81ac;
     padding-left: 1rem;
 }
 
 .cardTitle {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2E3440;
+    color: #2e3440;
 }
 
 .cardAuthor {
     font-size: 1.2rem;
     font-style: italic;
-    color: #4C566A;
+    color: #4c566a;
 }
 
 .cardPrice {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #5E81AC;
-}
-
-.addCartButton {
-    margin-bottom: 0.5rem;
-    margin-right: 1rem;
-    width: 17%;
+    color: #5e81ac;
 }
 
 .cardButtonContainer {
@@ -59,7 +52,7 @@
 }
 
 .additionalInfo {
-    color: #D08770;
+    color: #d08770;
     font-size: 1.2rem;
     font-weight: 700;
 }

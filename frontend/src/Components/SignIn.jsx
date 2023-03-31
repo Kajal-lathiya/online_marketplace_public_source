@@ -24,24 +24,31 @@ function SignIn() {
 
   async function postSignIn(userData) {
     try {
-      let response = await axios({
-        method: "post",
-        url: "/user/signin",
-        data: {
-          email: userData.email,
-          password: userData.password
-        },
-        headers: {
-          "Content-Type": "application/json"
-        }
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let raw = JSON.stringify({
+        email: "user111@gmail.com",
+        password: "Welcome123!"
       });
-      if (response.data.signInStatus === "success") {
-        window.localStorage.setItem("bnToken", response.data.token);
-        window.localStorage.setItem("bnUserID", response.data.id);
-        // dispatch(userSignIn());
-        showSuccess();
-        navigate("/");
-      }
+
+      let requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("http://localhost:3001/users/login", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          window.localStorage.setItem("bnToken", result.accessToken);
+          window.localStorage.setItem("bnUserID", result._id);
+          showSuccess();
+          navigate("/");
+        })
+        .catch((error) => console.log("error", error));
     } catch (err) {
       showFail();
     }
@@ -67,8 +74,8 @@ function SignIn() {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: ""
+      email: "user111@gmail.com",
+      password: "Welcome123!"
     },
     validate: (data) => {
       let errors = {};

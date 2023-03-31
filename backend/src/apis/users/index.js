@@ -30,7 +30,7 @@ usersRouter.post("/login", async (req, res, next) => {
     if (user) {
       const payload = { _id: user._id, role: user.role };
       const accessToken = await createAccessToken(payload);
-      res.send({ accessToken });
+      res.send({ _id: user._id, accessToken });
     } else {
       next(createHttpError(401, "Credentials are not ok!"));
     }
@@ -43,7 +43,7 @@ usersRouter.post("/login", async (req, res, next) => {
 usersRouter.post("/register", async (req, res, next) => {
   try {
     //expectes email, password in req.body
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
     const emailAlreadyRegistered = await UsersModel.findOne({ email: email });
     if (emailAlreadyRegistered)
       next(createHttpError(400, `User with provided email already exists`));
@@ -53,7 +53,7 @@ usersRouter.post("/register", async (req, res, next) => {
       const payload = { _id: newUser._id, role: newUser.role };
 
       const accessToken = await createAccessToken(payload);
-      res.status(201).send({ accessToken });
+      res.status(201).send({ _id: newUser._id, accessToken });
     }
     //creates a user
     //returns a valid token

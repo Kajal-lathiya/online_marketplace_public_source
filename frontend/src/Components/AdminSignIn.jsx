@@ -3,9 +3,6 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// import { useDispatch } from "react-redux";
-import { userSignIn } from "../features/orderBooks/userSlice";
-
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
@@ -16,25 +13,52 @@ import styles from "./AdminSignIn.module.css";
 
 function AdminSignIn() {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-
   const toast = useRef(null);
 
   const [formData, setFormData] = useState({});
 
   async function postSignIn(userData) {
     try {
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let raw = JSON.stringify({
+        email: userData.email,
+        password: userData.password
+      });
+
+      let requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("http://localhost:3001/admin/login", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          if (result) {
+            console.log("result-->", result);
+            window.localStorage.setItem("bnToken", result.accessToken);
+            window.localStorage.setItem("bnUserID", result._id);
+            showSuccess();
+            navigate("/admin/orders");
+          }
+        })
+        .catch((error) => console.log("error", error));
+
       let response = await axios({
         method: "post",
-        url: "/admin/signin",
+        url: "/admin/login",
         data: {
           email: userData.email,
-          password: userData.password,
+          password: userData.password
         },
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
+      console.log("response.data:", response.data);
       if (response.data.signInStatus === "success") {
         window.localStorage.setItem("bnToken", response.data.token);
         window.localStorage.setItem("bnUserID", response.data.id);
@@ -52,7 +76,7 @@ function AdminSignIn() {
       severity: "success",
       summary: "Welcome!",
       detail: "Signed in successfully",
-      life: 2500,
+      life: 2500
     });
   };
 
@@ -61,14 +85,14 @@ function AdminSignIn() {
       severity: "error",
       summary: "Oops!!!",
       detail: "Sign in fails",
-      life: 2500,
+      life: 2500
     });
   };
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: "admin@gmail.com",
+      password: "Welcome123!"
     },
     validate: (data) => {
       let errors = {};
@@ -91,7 +115,7 @@ function AdminSignIn() {
       setFormData(data);
       postSignIn(data);
       formik.resetForm();
-    },
+    }
   });
 
   const isFormFieldValid = (name) =>
@@ -120,13 +144,13 @@ function AdminSignIn() {
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   className={classNames({
-                    "p-invalid": isFormFieldValid("email"),
+                    "p-invalid": isFormFieldValid("email")
                   })}
                 />
                 <label
                   htmlFor="email"
                   className={classNames({
-                    "p-error": isFormFieldValid("email"),
+                    "p-error": isFormFieldValid("email")
                   })}
                 >
                   Email*
@@ -143,13 +167,13 @@ function AdminSignIn() {
                   onChange={formik.handleChange}
                   toggleMask
                   className={classNames({
-                    "p-invalid": isFormFieldValid("password"),
+                    "p-invalid": isFormFieldValid("password")
                   })}
                 />
                 <label
                   htmlFor="password"
                   className={classNames({
-                    "p-error": isFormFieldValid("password"),
+                    "p-error": isFormFieldValid("password")
                   })}
                 >
                   Password*
@@ -157,7 +181,6 @@ function AdminSignIn() {
               </span>
               {getFormErrorMessage("password")}
             </div>
-
             <Button type="submit" label="Sign In" className="mt-6" />
           </form>
         </div>

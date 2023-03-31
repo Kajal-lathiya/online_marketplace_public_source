@@ -14,7 +14,7 @@ function AdminOrders() {
       method: "get",
       url: "/admin/orders",
       headers: {
-        Authorization: `JWT ${adminToken}`,
+        Authorization: `Bearer ${adminToken}`,
         "Content-Type": "application/json",
       },
     });

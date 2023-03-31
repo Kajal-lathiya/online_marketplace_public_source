@@ -9,11 +9,13 @@ import styles from "./PageSwitch.module.css";
 function PageSwitch(props) {
   const [currentPage, setCurrentPage] = useState(props.currentPage);
 
-  let { url } = useMatch();
+  // let { url } = useMatch();
   function increasePageNumber() {
     if (currentPage <= props.totalPages) {
       setCurrentPage(currentPage + 1);
       props.onChangePageNumber(currentPage + 1);
+    } else if (currentPage === 1) {
+      setCurrentPage(currentPage);
     }
   }
 
@@ -24,6 +26,8 @@ function PageSwitch(props) {
     } else if (currentPage < 2) {
       setCurrentPage(1);
       props.onChangePageNumber(1);
+    } else if (currentPage === 1) {
+      setCurrentPage(currentPage);
     }
   }
 
@@ -48,7 +52,7 @@ function PageSwitch(props) {
       <div className={styles.innerContainer}>
         <div className={styles.pageSwitchContainer}>
           <Link
-            to={`${url}/${currentPage - 1 <= 1 ? 1 : currentPage - 1}`}
+            to={`/bookstore/page/${currentPage - 1 <= 1 ? 1 : currentPage - 1}`}
             className={styles.switchButton}
           >
             <Button
@@ -68,7 +72,7 @@ function PageSwitch(props) {
             of {props.totalPages}
           </span>
           <Link
-            to={`${url}/${currentPage + 1}`}
+            to={`/bookstore/page/${currentPage + 1}`}
             className={styles.switchButton}
           >
             <Button

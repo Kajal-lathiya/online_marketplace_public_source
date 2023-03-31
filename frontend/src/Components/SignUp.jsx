@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
+// import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -14,26 +15,36 @@ import styles from "./SignUp.module.css";
 
 function SignUp() {
   const toast = useRef(null);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({});
   const [successConfirm, setSuccessConfirm] = useState(false);
 
   async function postNewUser(userData) {
-    let response = await axios({
-      method: "post",
-      url: "/user/signup",
-      data: {
-        name: userData.name,
-        email: userData.email,
-        password: userData.password
-      },
-      headers: {
-        "Content-Type": "application/json"
-      }
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let raw = JSON.stringify({
+      name: "user1",
+      email: "user111@gmail.com",
+      password: "Welcome123!"
     });
-    if (response.data.createUser === "success") {
-      setSuccessConfirm(true);
-    }
+
+    let requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+
+    fetch("http://localhost:3001/users/register", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setSuccessConfirm(true);
+      })
+      .catch((error) => console.log("error", error));
   }
 
   const showSuccess = () => {
@@ -56,10 +67,10 @@ function SignUp() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      name: "Kajal lathiya",
+      email: "kajallathiya222@gmail.com",
+      password: "Welcome123!",
+      confirmPassword: "Welcome123!",
       accept: false
     },
     validate: (data) => {
@@ -97,6 +108,7 @@ function SignUp() {
       formik.resetForm();
       if (successConfirm === true) {
         showSuccess();
+        navigate("/");
       } else {
         showFail();
       }

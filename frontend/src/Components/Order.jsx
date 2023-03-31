@@ -11,7 +11,8 @@ import styles from "./Order.module.css";
 function Order(props) {
   const toast = useRef(null);
 
-  let totalMoney = useSelector((state) => state.orderBooks.totalMoney);
+  // let totalMoney = useSelector((state) => state.orderBooks.totalMoney);
+  let totalMoney = 50;
   const [isOrderSubmit, setIsOrderSubmit] = useState(false);
 
   const showSuccess = () => {
@@ -19,7 +20,7 @@ function Order(props) {
       severity: "success",
       summary: "Successful!",
       detail: "Your order is submitted",
-      life: 2500,
+      life: 2500
     });
   };
 
@@ -28,7 +29,7 @@ function Order(props) {
       severity: "error",
       summary: "Oops!!!",
       detail: "Submission fails",
-      life: 2500,
+      life: 2500
     });
   };
 
@@ -37,7 +38,7 @@ function Order(props) {
       severity: "warn",
       summary: "Oops!!!",
       detail: "You have not signed in yet",
-      life: 2500,
+      life: 2500
     });
   };
 
@@ -51,12 +52,12 @@ function Order(props) {
       data: {
         id: userID,
         orderBooks: orderBooks,
-        totalMoney: totalMoney,
+        totalMoney: totalMoney
       },
       headers: {
         Authorization: `JWT ${token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
     if (response.data.orderStatus === "success") {
       setIsOrderSubmit(true);
@@ -69,11 +70,11 @@ function Order(props) {
   function handleOrderClick() {
     const userID = window.localStorage.getItem("bnUserID");
     const token = window.localStorage.getItem("bnToken");
-    
+
     if (userID && token) {
-        sendOrder();
+      sendOrder();
     } else {
-        showSignInRequire();
+      showSignInRequire();
     }
   }
 

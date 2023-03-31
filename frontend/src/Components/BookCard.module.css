@@ -1,6 +1,6 @@
 .imageContainer {
     width: 25%;
-    height: 300px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,9 +40,4 @@
     margin-bottom: 0.5rem;
     margin-right: 1rem;
     width: 17%;
-}
-
-.cardButtonContainer {
-    display: flex;
-    justify-content: flex-start;
 }
