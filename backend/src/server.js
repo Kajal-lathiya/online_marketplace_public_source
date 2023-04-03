@@ -12,8 +12,8 @@ import {
   notFoundHandler,
 } from "./errorHandlers.js";
 import listEndpoints from "express-list-endpoints";
-import booksRouter from "./apis/users/booksRoutes.js";
 import cartRouter from "./apis/users/cartRouter.js";
+import ProductsRouter from "./apis/users/productsRoutes.js";
 
 const server = express();
 
@@ -28,7 +28,7 @@ server.use(express.json());
 
 server.use("/users", usersRouter);
 server.use("/admin", adminsRouter);
-server.use("/books", booksRouter);
+server.use("/products", ProductsRouter);
 server.use("/cart", cartRouter);
 
 

@@ -4,37 +4,28 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import BookCard from "./BookCard";
 import { OrderList } from "primereact/orderlist";
 import styles from "./Bookstore.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { PRODUCT_ACTION } from "../redux/actions/productAction";
 
 function Bookstore() {
-
-  const [books, setBooks] = useState([]);
+  const dispatch = useDispatch();
+  const productArray = useSelector((state) => state.product.productData);
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      let requestOptions = {
-        method: "GET",
-        redirect: "follow"
-      };
-      fetch("http://localhost:3001/books", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          setBooks(result);
-        })
-        .catch((error) => console.log("error", error));
-    };
-    fetchBooks();
+    dispatch(PRODUCT_ACTION());
   }, []);
 
-  const itemTemplate = (book) => {
+  const itemTemplate = (product) => {
     return (
       <BookCard
-        title={book.title}
-        author={book.author}
-        imgSrc={book.image_src}
-        price={book.price}
-        id={book._id}
-        key={book._id}
+        title={product.title}
+        category={product.category}
+        brand={product.brand}
+        thumbnail={product.thumbnail}
+        description={product.description}
+        price={product.price}
+        id={product._id}
+        key={product._id}
       />
     );
   };
@@ -42,10 +33,9 @@ function Bookstore() {
   return (
     <div className={styles.outerContainer}>
       <div className="card  m:flex m:justify-content-center">
-        {books && books.length !== 0 ? (
+        {productArray && productArray.length !== 0 ? (
           <OrderList
-            value={books}
-            onChange={(e) => setBooks(e.value)}
+            value={productArray}
             itemTemplate={itemTemplate}
             header="Products"
             filter

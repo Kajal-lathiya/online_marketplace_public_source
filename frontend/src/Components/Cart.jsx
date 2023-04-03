@@ -1,40 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import CartItem from "./CartItem";
 import Order from "./Order";
 import { OrderList } from "primereact/orderlist";
 
 import styles from "./Cart.module.css";
+import { CARTITEMS_ACTION } from "../redux/actions/cartAction";
 
 function Cart() {
   // const books = useSelector((state) => state.orderBooks.orderBooks);
-  const [books, setBooks] = useState([]);
+  const dispatch = useDispatch();
+  const searchArray = useSelector((state) => state.search.searchData);
+  const [cartItems, setCartItems] = useState([]);
+
+  const currentUserID = window.localStorage.getItem("bnUserID");
 
   useEffect(() => {
+    dispatch(CARTITEMS_ACTION());
     let requestOptions = {
       method: "GET",
       redirect: "follow"
     };
-    fetch("http://localhost:3001/books", requestOptions)
+    fetch(`http://localhost:3001/cart/${currentUserID}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-        setBooks(result);
+        console.log("resultcartitems", result);
+        setCartItems(result);
       })
       .catch((error) => console.log("error", error));
   }, []);
 
-  const itemTemplate = (book) => {
+  const itemTemplate = (item) => {
     return (
       <CartItem
-        key={book.id}
-        id={book.id}
-        title={book.title}
-        imgSrc={book.imgSrc}
-        author={book.author}
-        price={book.price}
-        orderQuantity={book.orderQuantity}
+        key={item._id}
+        cartItemID={item._id}
+        productId={item.productID._id}
+        title={item.productID.title}
+        imgSrc={item.productID.thumbnail}
+        author={item.productID.brand}
+        price={item.productID.price}
+        orderQuantity={item.quantity}
       />
     );
   };
@@ -48,13 +55,12 @@ function Cart() {
         <div className={styles.cartInformation}>
           <div className={styles.cartBooks}>
             <OrderList
-              value={books}
-              onChange={(e) => setBooks(e.value)}
+              value={cartItems}
               itemTemplate={itemTemplate}
             ></OrderList>
           </div>
         </div>
-        <Order books={books} />
+        <Order books={cartItems} />
       </div>
     </div>
   );

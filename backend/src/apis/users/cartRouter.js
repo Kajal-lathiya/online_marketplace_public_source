@@ -1,15 +1,37 @@
 import express from "express";
-import CartModel from "./model.js";
+import CartModel from "./cartModel.js";
 import createHttpError from "http-errors";
 
 const cartRouter = express.Router();
 
-cartRouter.post("/", async (req, res, next) => {
+cartRouter.get("/:userId", async (req, res, next) => {
   try {
-      const addtoCart = new CartModel(req.body);
-      console.log('addtoCart-->', addtoCart);
-    const { _id } = await addtoCart.save();
-    res.status(201).send({ id: _id });
+    const cartItem = await CartModel.find({
+      userID: req.params.userId
+    }).populate("productID");
+    console.log('cartItem:', cartItem);
+    if (!cartItem) {
+      return res.status(404).json({ message: "Cart item not found" });
+    }
+    res.status(200).json(cartItem);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+cartRouter.post("/addToCart", async (req, res, next) => {
+  try {
+    const { userID, productID, quantity } = req.body;
+    // create new cart item with the required fields
+    const newCartItem = new CartModel({
+      userID,
+      productID,
+      quantity
+    });
+    // save the new cart item to the database
+    await newCartItem.save();
+    res.json({ message: "Cart item added successfully!" });
   } catch (error) {
     next(error);
   }
@@ -30,15 +52,38 @@ cartRouter.post("/", async (req, res, next) => {
 //   }
 // });
 
-// cartRouter.delete("/:id", async (req, res, next) => {
-//   try {
-//     const deleteProduct = await ProductsModel.findByIdAndDelete(req.params.id);
-//     if (deleteProduct) res.status(204).send();
-//     else
-//       next(createHttpError(404, `Product with id ${req.params.id} not found!`));
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+cartRouter.put("/updateCartItem", async (req, res) => {
+  try {
+    const { userID, productID, quantity } = req.body;
+
+    // find the existing cart item by userID and productID
+    const existingCartItem = await CartModel.findOne({ userID, productID });
+    if (!existingCartItem) {
+      // handle case where cart item doesn't exist
+      return res.status(404).json({ message: "Cart item not found!" });
+    }
+
+    // update the quantity field of the cart item
+    existingCartItem.quantity = quantity;
+    // save the updated cart item to the database
+    await existingCartItem.save();
+    res.json({ message: "Cart item updated successfully!" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+cartRouter.delete("/:cartID", async (req, res, next) => {
+  try {
+    const deleteProduct = await CartModel.findByIdAndDelete(req.params.cartID);
+    if (deleteProduct) res.status(204).send();
+    else
+      next(
+        createHttpError(404, `Product with id ${req.params.cartID} not found!`)
+      );
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default cartRouter;

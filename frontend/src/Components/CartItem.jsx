@@ -15,12 +15,9 @@ import {
 
 function CartItem(props) {
   const dispatch = useDispatch();
-  const book = {
-    id: props.id,
-    orderQuantity: props.orderQuantity
-  };
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(props.orderQuantity);
+  const currentUserID = window.localStorage.getItem("bnUserID");
 
   function handleChangeQuantity(e) {
     setQuantity(parseInt(e.target.value));
@@ -30,17 +27,62 @@ function CartItem(props) {
     if (e.key === "Enter") {
       if (e.target.value >= 1 && e.target.value <= 99) {
         setQuantity(parseInt(e.target.value));
-        book.orderQuantity = parseInt(quantity);
-        dispatch(changeQuantity(book));
-        dispatch(calcTotalMoney());
+        props.orderQuantity = parseInt(quantity);
+        // dispatch(changeQuantity(book));
+        updateQuntity();
+        // dispatch(calcTotalMoney());
       } else {
         setQuantity(1);
-        book.orderQuantity = parseInt(quantity);
-        dispatch(changeQuantity(book));
-        dispatch(calcTotalMoney());
+        props.orderQuantity = parseInt(quantity);
+        // dispatch(changeQuantity(book));
+        updateQuntity();
+        // dispatch(calcTotalMoney());
       }
     }
   }
+
+  
+
+  const updateQuntity = (qty) => {
+    if (qty >= 1) {
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      let item = {
+        userID: currentUserID,
+        productID: props.productId,
+        quantity: qty
+      };
+      console.log("item:", item);
+      let raw = JSON.stringify(item);
+
+      let requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("http://localhost:3001/cart/updateCartItem", requestOptions)
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    }
+  };
+  const removeBookFromCart = () => {
+    console.log("calling delete");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let requestOptions = {
+      method: "DELETE",
+      headers: myHeaders
+    };
+    console.log("props.cartItemID:", props.cartItemID);
+    fetch(`http://localhost:3001/cart/${props.cartItemID}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  };
 
   return (
     <div>
@@ -60,13 +102,14 @@ function CartItem(props) {
           </div>
           <span className="font-bold text-900">${props.price}</span>
           <div className={styles.cardButtonContainer}>
-            {props.orderQuantity <= 1 ? (
+            {quantity <= 1 ? (
               <Button
                 icon="pi pi-trash"
                 className="p-button-rounded p-button-danger"
                 onClick={() => {
-                  dispatch(removeBookFromCart(book));
-                  dispatch(calcTotalMoney());
+                  // dispatch(removeBookFromCart());
+                  // dispatch(calcTotalMoney());
+                  removeBookFromCart();
                 }}
               />
             ) : (
@@ -75,8 +118,10 @@ function CartItem(props) {
                 className="p-button-rounded"
                 onClick={() => {
                   setQuantity(quantity - 1);
-                  dispatch(decreaseQuantity(book));
-                  dispatch(calcTotalMoney());
+                  // dispatch(decreaseQuantity());
+                  // dispatch(calcTotalMoney());
+                  let qty = quantity - 1;
+                  updateQuntity(qty);
                 }}
               />
             )}
@@ -93,8 +138,10 @@ function CartItem(props) {
               className="p-button-rounded"
               onClick={() => {
                 setQuantity(quantity + 1);
-                dispatch(increaseQuantity(book));
-                dispatch(calcTotalMoney());
+                // dispatch(increaseQuantity(book));
+                // dispatch(calcTotalMoney());
+                let qty = quantity + 1;
+                updateQuntity(qty);
               }}
             />
           </div>

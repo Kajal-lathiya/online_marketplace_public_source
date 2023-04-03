@@ -6,14 +6,13 @@ export const getSearchAPI = (value) => {
   return async (dispatch, getState) => {
     console.log("getState", getState());
     try {
-      let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/deezer/search?q=${value}`
-      );
+      let response = await fetch(`https://dummyjson.com/products`);
       if (response.ok) {
         let result = await response.json();
+        console.log('result:', result);
         dispatch({
           type: GET_SEARCH,
-          payload: result.data
+          payload: result.products
         });
 
         setTimeout(() => {

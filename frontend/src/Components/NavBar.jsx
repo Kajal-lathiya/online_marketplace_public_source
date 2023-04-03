@@ -74,19 +74,24 @@ function NavBar() {
       <div className={styles.innerContainer}>
         <div className={styles.navbarContainer}>
           <div className={styles.logoContainer}>
-            <img src={logoPicture} alt="BN Bookstore Logo" />
+            <img
+              src={
+                "https://tse3.mm.bing.net/th?id=OIP.OCUP9yojSLsGZPJz9aGNsAHaCR&pid=Api&P=0"
+              }
+              alt="Onlline Marketplace"
+              className={styles.logoSize}
+            />
           </div>
           <div className={styles.menuContainer}>
             <div className={styles.menu}>
               <Link to="/" className={`${styles.menuText} ${styles.menuItem}`}>
                 <div className={styles.menuItem}>Home</div>
               </Link>
-
               <Link
                 to="/bookstore/page"
                 className={`${styles.menuText} ${styles.menuItem}`}
               >
-                <div className={styles.menuItem}>Bookstore</div>
+                <div className={styles.menuItem}>Products</div>
               </Link>
 
               <Link

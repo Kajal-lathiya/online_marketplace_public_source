@@ -8,9 +8,16 @@ import { Toast } from "primereact/toast";
 
 import styles from "./Order.module.css";
 
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  CardElement,
+  Elements,
+  ElementsConsumer
+} from "@stripe/react-stripe-js";
+
 function Order(props) {
   const toast = useRef(null);
-
+  const stripePromise = loadStripe('pk_test_6pRNASCoBOKtIshFeQd4XMUh');
   // let totalMoney = useSelector((state) => state.orderBooks.totalMoney);
   let totalMoney = 50;
   const [isOrderSubmit, setIsOrderSubmit] = useState(false);
@@ -77,6 +84,32 @@ function Order(props) {
       showSignInRequire();
     }
   }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const {stripe, elements} = this.props;
+
+    if (elements == null) {
+      return;
+    }
+
+    const {error, paymentMethod} = await stripe.createPaymentMethod({
+      type: 'card',
+      card: elements.getElement(CardElement),
+    });
+  };
+  const InjectedCheckoutForm = () => (
+    <ElementsConsumer>
+      {({stripe, elements}) => (
+        // <CheckoutForm stripe={stripe} elements={elements} />
+        <form onSubmit={handleSubmit}>
+        <CardElement />
+        <button type="submit" disabled={!stripe}>
+          Pay
+        </button>
+      </form>
+      )}
+    </ElementsConsumer>
+  );
 
   return (
     <div className={styles.orderContainer}>
@@ -85,6 +118,9 @@ function Order(props) {
         Total:{" "}
         <span className={styles.orderPrice}>${totalMoney.toFixed(2)}</span>
       </div>
+      <Elements stripe={stripePromise}>
+        <InjectedCheckoutForm />
+      </Elements>
       <Button label="Send Order" icon="pi pi-send" onClick={handleOrderClick} />
     </div>
   );

@@ -1,7 +1,7 @@
 .outerContainer {
     margin: auto;
     width: 100%;
-    background-color: #D8DEE9;
+    background-color: #d8dee9;
 }
 
 .innerContainer {
@@ -23,6 +23,11 @@
     align-items: center;
 }
 
+.logoSize {
+    width: auto;
+    height: 70px;
+}
+
 .menuContainer {
     display: flex;
     width: 75%;
@@ -38,7 +43,7 @@
 .menuItem {
     display: flex;
     width: 11rem;
-    height: 100%;    
+    height: 100%;
     justify-content: center;
     align-items: center;
     font-size: 1.7rem;
@@ -46,7 +51,7 @@
 }
 
 .menuItem:hover {
-    color: #BF616A;
+    color: #bf616a;
     cursor: pointer;
 }
 
@@ -64,7 +69,8 @@
 }
 
 .navButton {
-    width: 100%;
+    width: 70%;
+    margin: 5px;
 }
 
 .navCartContainer {
@@ -74,7 +80,7 @@
 }
 
 .cartIcon {
-    color: #2E3440;
+    color: #2e3440;
 }
 
 .cartIcon:hover {
@@ -82,11 +88,5 @@
 }
 
 .badgeContent {
-    background-color: #BF616A;
+    background-color: #bf616a;
 }
-
-
-
-
-
-
