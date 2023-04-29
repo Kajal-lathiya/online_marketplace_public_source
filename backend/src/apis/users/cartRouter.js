@@ -1,5 +1,6 @@
 import express from "express";
 import CartModel from "./cartModel.js";
+import productsModel from "./productsModel.js";
 import createHttpError from "http-errors";
 
 const cartRouter = express.Router();
@@ -9,7 +10,7 @@ cartRouter.get("/:userId", async (req, res, next) => {
     const cartItem = await CartModel.find({
       userID: req.params.userId
     }).populate("productID");
-    console.log('cartItem:', cartItem);
+    console.log("cartItem:", cartItem);
     if (!cartItem) {
       return res.status(404).json({ message: "Cart item not found" });
     }
@@ -30,7 +31,14 @@ cartRouter.post("/addToCart", async (req, res, next) => {
       quantity
     });
     // save the new cart item to the database
+    const product_data = {
+      addtocart: true
+    };
     await newCartItem.save();
+    await productsModel.findByIdAndUpdate(productID, product_data, {
+      new: true,
+      runValidators: true
+    });
     res.json({ message: "Cart item added successfully!" });
   } catch (error) {
     next(error);

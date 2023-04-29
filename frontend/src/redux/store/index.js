@@ -5,6 +5,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import searchReducer from "../reducers";
 import productReducer from "../reducers/productReducer";
 import cartReducer from "../reducers/cartReducer";
+import checkoutReducer from "../reducers/checkoutReducer";
 const persistConfig = {
   key: "root",
   storage: localStorage
@@ -18,7 +19,8 @@ const persistConfig = {
 const bigReducer = combineReducers({
   search: searchReducer,
   product: productReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  checkout: checkoutReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, bigReducer);

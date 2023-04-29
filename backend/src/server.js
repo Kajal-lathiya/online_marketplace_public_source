@@ -14,6 +14,7 @@ import {
 import listEndpoints from "express-list-endpoints";
 import cartRouter from "./apis/users/cartRouter.js";
 import ProductsRouter from "./apis/users/productsRoutes.js";
+import paymentRouter from "./apis/users/paymentRouter.js";
 
 const server = express();
 
@@ -30,6 +31,7 @@ server.use("/users", usersRouter);
 server.use("/admin", adminsRouter);
 server.use("/products", ProductsRouter);
 server.use("/cart", cartRouter);
+server.use("/payment", paymentRouter);
 
 
 //ERROR HANDLERS

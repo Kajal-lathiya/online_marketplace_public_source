@@ -24,6 +24,7 @@ function Bookstore() {
         thumbnail={product.thumbnail}
         description={product.description}
         price={product.price}
+        addtocart={product.addtocart}
         id={product._id}
         key={product._id}
       />

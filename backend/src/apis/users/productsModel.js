@@ -2,13 +2,17 @@ import mongoose, { model } from "mongoose";
 
 const { Schema } = mongoose;
 
-const ProductsSchema = new Schema({
-  title: { type: String, required: true },
-  brand: { type: String, required: true },
-  price: { type: Number, required: true },
-  thumbnail: { type: String, required: true },
-  category: { type: String, required: true },
-  description: { type: String, required: true },
-  publish_date: { type: String, required: true }
-});
+const ProductsSchema = new Schema(
+  {
+    title: { type: String },
+    brand: { type: String },
+    price: { type: Number },
+    thumbnail: { type: String },
+    category: { type: String },
+    description: { type: String },
+    publish_date: { type: String },
+    addtocart: { type: Boolean, default: false }
+  },
+  { timestamps: true }
+);
 export default model("Product", ProductsSchema);

@@ -1,25 +1,15 @@
 import React, { useState, useRef } from "react";
-import axios from "axios";
-
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-
 import styles from "./Order.module.css";
-
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  CardElement,
-  Elements,
-  ElementsConsumer
-} from "@stripe/react-stripe-js";
+import { CHECKOUT_ACTION } from "../redux/actions/checkoutAction";
 
 function Order(props) {
   const toast = useRef(null);
-  const stripePromise = loadStripe('pk_test_6pRNASCoBOKtIshFeQd4XMUh');
-  // let totalMoney = useSelector((state) => state.orderBooks.totalMoney);
-  let totalMoney = 50;
+  const dispatch = useDispatch();
+  let checkoutData = useSelector((state) => state.checkout.checkoutData);
+
   const [isOrderSubmit, setIsOrderSubmit] = useState(false);
 
   const showSuccess = () => {
@@ -50,23 +40,8 @@ function Order(props) {
   };
 
   async function sendOrder() {
-    const userID = window.localStorage.getItem("bnUserID");
-    const token = window.localStorage.getItem("bnToken");
-    const orderBooks = props.books;
-    let response = await axios({
-      method: "post",
-      url: "/order",
-      data: {
-        id: userID,
-        orderBooks: orderBooks,
-        totalMoney: totalMoney
-      },
-      headers: {
-        Authorization: `JWT ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (response.data.orderStatus === "success") {
+    dispatch(CHECKOUT_ACTION());
+    if (checkoutData) {
       setIsOrderSubmit(true);
       showSuccess();
     } else {
@@ -84,43 +59,16 @@ function Order(props) {
       showSignInRequire();
     }
   }
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const {stripe, elements} = this.props;
-
-    if (elements == null) {
-      return;
-    }
-
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-    });
-  };
-  const InjectedCheckoutForm = () => (
-    <ElementsConsumer>
-      {({stripe, elements}) => (
-        // <CheckoutForm stripe={stripe} elements={elements} />
-        <form onSubmit={handleSubmit}>
-        <CardElement />
-        <button type="submit" disabled={!stripe}>
-          Pay
-        </button>
-      </form>
-      )}
-    </ElementsConsumer>
-  );
 
   return (
     <div className={styles.orderContainer}>
       <Toast ref={toast} position="bottom-right" />
       <div className={styles.orderTotal}>
         Total:{" "}
-        <span className={styles.orderPrice}>${totalMoney.toFixed(2)}</span>
+        <span className={styles.orderPrice}>
+          ${props.totalMoney.toFixed(2)}
+        </span>
       </div>
-      <Elements stripe={stripePromise}>
-        <InjectedCheckoutForm />
-      </Elements>
       <Button label="Send Order" icon="pi pi-send" onClick={handleOrderClick} />
     </div>
   );

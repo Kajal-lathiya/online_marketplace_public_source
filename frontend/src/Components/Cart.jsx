@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import CartItem from "./CartItem";
@@ -9,26 +9,25 @@ import styles from "./Cart.module.css";
 import { CARTITEMS_ACTION } from "../redux/actions/cartAction";
 
 function Cart() {
-  // const books = useSelector((state) => state.orderBooks.orderBooks);
   const dispatch = useDispatch();
-  const searchArray = useSelector((state) => state.search.searchData);
-  const [cartItems, setCartItems] = useState([]);
-
-  const currentUserID = window.localStorage.getItem("bnUserID");
-
+  const loader = useSelector((state) => state.cart.cartItemsLoading);
+  const cartItemsArray = useSelector((state) => state.cart.cartData);
+  const [totalMoney, setTotalMoney] = useState(0);
   useEffect(() => {
-    dispatch(CARTITEMS_ACTION());
-    let requestOptions = {
-      method: "GET",
-      redirect: "follow"
-    };
-    fetch(`http://localhost:3001/cart/${currentUserID}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("resultcartitems", result);
-        setCartItems(result);
+    dispatch(CARTITEMS_ACTION())
+      .then((res) => {
+        console.log("res", res);
+        let total = 0;
+        for (let orderProduct of res) {
+          total =
+            total +
+            parseInt(orderProduct.quantity) *
+              parseFloat(orderProduct.productID.price);
+        }
+        console.log("total::", total);
+        setTotalMoney(total);
       })
-      .catch((error) => console.log("error", error));
+      .catch((err) => console.log("err", err));
   }, []);
 
   const itemTemplate = (item) => {
@@ -48,20 +47,22 @@ function Cart() {
 
   return (
     <div className={styles.outerContainer}>
-      <div className={styles.innerContainer}>
-        <div>
-          <h1>Cart Information</h1>
-        </div>
-        <div className={styles.cartInformation}>
-          <div className={styles.cartBooks}>
-            <OrderList
-              value={cartItems}
-              itemTemplate={itemTemplate}
-            ></OrderList>
+      {!loader && (
+        <div className={styles.innerContainer}>
+          <div>
+            <h1>Cart Information</h1>
           </div>
+          <div className={styles.cartInformation}>
+            <div className={styles.cartBooks}>
+              <OrderList
+                value={cartItemsArray}
+                itemTemplate={itemTemplate}
+              ></OrderList>
+            </div>
+          </div>
+          <Order books={cartItemsArray} totalMoney={totalMoney} />
         </div>
-        <Order books={cartItems} />
-      </div>
+      )}
     </div>
   );
 }

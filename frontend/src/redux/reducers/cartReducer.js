@@ -24,19 +24,31 @@ export default function cart(state = initialState, action = {}) {
             : state.addtocartData
       };
     }
-    // case "PENDING_ORDER": {
-    //   return {
-    //     ...state,
-    //     pendingOrderError: action.error ? action.error : null,
-    //     pendingOrderSuccess: action.subtype === "success",
-    //     pendingOrderLoading: action.subtype === "loading",
-    //     pendingOrder:
-    //       action.subtype === "success"
-    //         ? action.pendingOrder
-    //         : state.pendingOrder
-    //   };
-    // }
+    case "UPDATE_QUNTITY": {
+      return {
+        ...state,
+        updateQuntityError: action.error ? action.error : null,
+        updateQuntitySuccess: action.subtype === "success",
+        updateQuntityLoading: action.subtype === "loading",
+        updateQuntity:
+          action.subtype === "success"
+            ? action.updateQuntity
+            : state.updateQuntity
+      };
+    }
 
+    case "REMOVE_CARTITEM": {
+      return {
+        ...state,
+        deleteCartItemError: action.error ? action.error : null,
+        deleteCartItemSuccess: action.subtype === "success",
+        deleteCartItemLoading: action.subtype === "loading",
+        deleteCartItem:
+          action.subtype === "success"
+            ? action.deleteCartItem
+            : state.deleteCartItem
+      };
+    }
     default:
       return state;
   }

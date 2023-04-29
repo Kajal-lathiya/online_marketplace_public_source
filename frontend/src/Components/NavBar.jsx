@@ -2,6 +2,7 @@ import React from "react";
 import logoPicture from "../assets/bn_bookstore_logo.png";
 import styles from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 // import { useDispatch, useSelector } from "react-redux";
 import { userSignOut } from "../features/orderBooks/userSlice";
@@ -13,10 +14,9 @@ import { SplitButton } from "primereact/splitbutton";
 
 function NavBar() {
   // const dispatch = useDispatch();
-  let cartCount = 2;
-  // let cartCount = useSelector((state) => state.orderBooks.orderBooks.length);
   // let isSignIn = useSelector((state) => state.userManagement.isSignIn);
   let isSignIn = false;
+  const cartCount = useSelector((state) => state.cart.cartData.length);
 
   let navigate = useNavigate();
 
